@@ -1,0 +1,64 @@
+version: "3.0"
+services:
+  store_app:
+    build:
+      context: .
+      dockerfile: build/http.Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - HTTP_PORT=8000
+      - DB_USER=root
+      - DB_PASSWORD=root_secret
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_SCHEMA=synapsis
+      - DB_TIMEOUT=60
+      - DB_MAX_IDDLE_CONNECTION=5
+      - DB_MAX_IDDLE_LIFETTIME=10
+      - DB_MAX_OPEN_CONNECTION=20
+      - DB_MAX_LIFETIME=600
+      - JWT_SECRET=secret
+      - JWT_SELLER_SECRET=seller_secret
+      - JWT_ACCESS_TOKEN_LIFETIME=24
+      - JWT_REFRESH_TOKEN_LIFETIME=72
+      - REDIS_ADDR=redis:6379
+      - REDIS_USERNAME=
+      - REDIS_PASSWORD=
+      - REDIS_DB=0
+      - REDIS_MIN_IDLE_CONNECTION=5
+      - REDIS_MAX_IDLE_CONNECTION=10
+      - REDIS_MAX_ACTIVE_CONNECTION=20
+    depends_on:
+      mysql: 
+        condition: service_healthy
+        restart: true
+  mysql:
+    image: mysql:8.4.0
+    environment:
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=root_secret
+      - MYSQL_USER=synapsis
+      - MYSQL_PASSWORD=synapsis_secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./database/1_migration_table.sql:/docker-entrypoint-initdb.d/1_migration_table.sql
+      - ./database/2_category_product_seeder.sql:/docker-entrypoint-initdb.d/2_category_product_seeder.sql
+      - ./database/3_product_seeder.sql:/docker-entrypoint-initdb.d/3_product_seeder.sql
+      - mysql_volume:/var/lib/mysql
+    healthcheck:
+      test: mysql --user=root --password=root_secret -e 'show databases'
+      timeout: 10s
+      retries: 10
+  redis:
+    image: redis:7.0.15-alpine3.20
+    environment:
+      - MYSQL_ROOT_USER=root
+      - MYSQL_ROOT_PASSWORD=root_secret
+      - MYSQL_USER=synapsis
+      - MYSQL_PASSWORD=synapsis_secret
+    ports:
+      - "6378:6379"
+volumes:
+  mysql_volume:

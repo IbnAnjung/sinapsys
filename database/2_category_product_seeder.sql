@@ -1,0 +1,55 @@
+INSERT INTO synapsis.product_categories (name) VALUES
+	 ('Wooden'),
+	 ('Rubber'),
+	 ('Bronze'),
+	 ('Cotton'),
+	 ('Wooden'),
+	 ('Wooden'),
+	 ('Bronze'),
+	 ('Plastic'),
+	 ('Granite'),
+	 ('Wooden');
+INSERT INTO synapsis.product_categories (name) VALUES
+	 ('Plastic'),
+	 ('Soft'),
+	 ('Wooden'),
+	 ('Bronze'),
+	 ('Granite'),
+	 ('Fresh'),
+	 ('Metal'),
+	 ('Cotton'),
+	 ('Metal'),
+	 ('Plastic');
+INSERT INTO synapsis.product_categories (name) VALUES
+	 ('Plastic'),
+	 ('Metal'),
+	 ('Bronze'),
+	 ('Wooden'),
+	 ('Bronze'),
+	 ('Plastic'),
+	 ('Fresh'),
+	 ('Fresh'),
+	 ('Metal'),
+	 ('Metal');
+INSERT INTO synapsis.product_categories (name) VALUES
+	 ('Bronze'),
+	 ('Metal'),
+	 ('Rubber'),
+	 ('Fresh'),
+	 ('Soft'),
+	 ('Wooden'),
+	 ('Metal'),
+	 ('Cotton'),
+	 ('Granite'),
+	 ('Fresh');
+INSERT INTO synapsis.product_categories (name) VALUES
+	 ('Wooden'),
+	 ('Fresh'),
+	 ('Bronze'),
+	 ('Plastic'),
+	 ('Cotton'),
+	 ('Concrete'),
+	 ('Metal'),
+	 ('Metal'),
+	 ('Cotton'),
+	 ('Soft');
