@@ -21,9 +21,27 @@ docker-compose up
 cp .env.example .env
 
 set -o allexport; source .env; go run main.go
+
+## also you can pull from docker image
+docker pull anggasaputra/synapsis:latest
+#running container 
+docker run --network local -p 8000:8000 --env HTTP_PORT=8000 \ 
+  --env DB_USER=root --env DB_PASSWORD=secret --env DB_HOST=mysql \
+  --env DB_PORT=3306 --env DB_SCHEMA=synapsis --env DB_TIMEOUT=60 \
+  --env DB_MAX_IDDLE_CONNECTION=5 --env DB_MAX_IDDLE_LIFETTIME=10 \
+  --env DB_MAX_OPEN_CONNECTION=20 --env DB_MAX_LIFETIME=600 \
+  --env JWT_SECRET=secret --env JWT_SELLER_SECRET=seller_secret \
+  --env JWT_ACCESS_TOKEN_LIFETIME=24 --env JWT_REFRESH_TOKEN_LIFETIME=72 \
+  --env REDIS_ADDR=redis:6379 --env REDIS_USERNAME= --env REDIS_PASSWORD= --env \
+  REDIS_DB=0 --env REDIS_MIN_IDLE_CONNECTION=5 --env REDIS_MAX_IDLE_CONNECTION=10 \
+  --env REDIS_MAX_ACTIVE_CONNECTION=20 \ 
+  --rm --name synapsis synapsis
+
 ```
 
 ## Project Structure
+![](https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg)
+
       .
       ├── build                         # build & ci/cd content 
       ├   ├── http.Dockerfile 
