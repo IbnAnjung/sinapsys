@@ -1,0 +1,964 @@
+{
+	"info": {
+		"_postman_id": "d9898c3f-2b76-450b-a92a-467a9a7774cd",
+		"name": "synapsis",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14759363"
+	},
+	"item": [
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Get Products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/product?limit=5&page=1&category_id=4",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"product"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "category_id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Register",
+			"item": [
+				{
+					"name": "Register with valid input",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"name\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"phone_number\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"access_token\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"refresh_token\");\r",
+									"\r",
+									"    pm.expect(responseJSON.data.id).to.be.an(\"number\");\r",
+									"    pm.expect(responseJSON.data.name).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.phone_number).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.access_token).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.refresh_token).to.be.an(\"string\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"existing_username\",pm.environment.get(\"new_user_username\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var phoneNumber = pm.variables.replaceIn('{{$randomPhoneNumberExt}}')\r",
+									"\r",
+									"pm.environment.set(\"phone_number\", phoneNumber.replaceAll(\"-\",\"\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"{{phone_number}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"name\": \"{{$randomFullName}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "[No Test] Prerequiresite",
+					"item": [
+						{
+							"name": "Register new user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test('should response 201 status code', () => {\r",
+											"    pm.response.to.have.status(201);\r",
+											"});\r",
+											"\r",
+											"pm.test('should response with correct property and message', () =>{\r",
+											"    const responseJSON = pm.response.json();\r",
+											"\r",
+											"    pm.expect(responseJSON).to.be.an('object');\r",
+											"    // check message\r",
+											"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+											"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+											"\r",
+											"    // check data\r",
+											"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+											"    pm.expect(responseJSON.data).to.haveOwnProperty(\"id\");\r",
+											"    pm.expect(responseJSON.data).to.haveOwnProperty(\"name\");\r",
+											"    pm.expect(responseJSON.data).to.haveOwnProperty(\"phone_number\");\r",
+											"    pm.expect(responseJSON.data).to.haveOwnProperty(\"access_token\");\r",
+											"    pm.expect(responseJSON.data).to.haveOwnProperty(\"refresh_token\");\r",
+											"\r",
+											"    pm.expect(responseJSON.data.id).to.be.an(\"number\");\r",
+											"    pm.expect(responseJSON.data.name).to.be.an(\"string\");\r",
+											"    pm.expect(responseJSON.data.phone_number).to.be.an(\"string\");\r",
+											"    pm.expect(responseJSON.data.access_token).to.be.an(\"string\");\r",
+											"    pm.expect(responseJSON.data.refresh_token).to.be.an(\"string\");\r",
+											"});\r",
+											"\r",
+											"var res = pm.response.json()\r",
+											"pm.environment.set(\"new_user_id\", res.data.id)\r",
+											"\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											"var phoneNumber = pm.variables.replaceIn('{{$randomPhoneNumberExt}}')\r",
+											"\r",
+											"pm.environment.set(\"phone_number\", phoneNumber.replaceAll(\"-\",\"\"))"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"phone_number\": \"{{phone_number}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"name\": \"{{$randomFullName}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+									"protocol": "{{protocol}}",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{port}}",
+									"path": [
+										"auth",
+										"register"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login with valid payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"    const responseJSON = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"        \r",
+									"    var userId = pm.environment.get(\"new_user_id\")\r",
+									"    var userFullname = pm.environment.get(\"new_user_fullname\")\r",
+									"\r",
+									"    pm.expect(data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"name\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"phone_number\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"refresh_token\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"access_token\");\r",
+									"\r",
+									"    pm.expect(data.id).to.be.an(\"number\");\r",
+									"    pm.expect(data.access_token).to.be.an(\"string\");\r",
+									"    pm.expect(data.refresh_token).to.be.an(\"string\");\r",
+									"    pm.expect(data.name).to.be.an(\"string\");\r",
+									"    pm.expect(data.id).to.equal(userId);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"{{phone_number}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/login",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "Register New user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"name\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"phone_number\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"access_token\");\r",
+									"    pm.expect(responseJSON.data).to.haveOwnProperty(\"refresh_token\");\r",
+									"\r",
+									"    pm.expect(responseJSON.data.id).to.be.an(\"number\");\r",
+									"    pm.expect(responseJSON.data.name).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.phone_number).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.access_token).to.be.an(\"string\");\r",
+									"    pm.expect(responseJSON.data.refresh_token).to.be.an(\"string\");\r",
+									"});\r",
+									"\r",
+									"pm.environment.set(\"existing_username\",pm.environment.get(\"new_user_username\"))\r",
+									"pm.environment.set(\"access_token\", responseJSON.data.access_token);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var phoneNumber = pm.variables.replaceIn('{{$randomPhoneNumberExt}}')\r",
+									"\r",
+									"pm.environment.set(\"phone_number\", phoneNumber.replaceAll(\"-\",\"\"))"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"{{phone_number}}\",\r\n    \"password\": \"{{password}}\",\r\n    \"confirm_password\": \"{{password}}\",\r\n    \"name\": \"{{$randomFullName}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/auth/register",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Cart Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"        \r",
+									"    pm.expect(data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"product_id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"quantity\");\r",
+									"\r",
+									"    pm.expect(data.id).to.be.an(\"number\");\r",
+									"    pm.expect(data.product_id).to.be.an(\"number\");\r",
+									"    pm.expect(data.quantity).to.be.an(\"number\");\r",
+									"})\r",
+									"\r",
+									"pm.environment.set(\"cart_id\", responseJSON.data.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 5,\r\n    \"quantity\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/cart",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"        \r",
+									"    pm.expect(data).to.haveOwnProperty(\"id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"product_id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"quantity\");\r",
+									"\r",
+									"    pm.expect(data.id).to.be.an(\"number\");\r",
+									"    pm.expect(data.product_id).to.be.an(\"number\");\r",
+									"    pm.expect(data.quantity).to.be.an(\"number\");\r",
+									"})\r",
+									"\r",
+									"pm.environment.set(\"cart_id\", responseJSON.data.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/cart/:id",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"cart",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{cart_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Cart Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"\r",
+									"    pm.expect(data).to.be.an(\"object\");\r",
+									"    data.products.forEach((prd) => {\r",
+									"        pm.expect(prd).to.haveOwnProperty(\"cart_product_id\");\r",
+									"        pm.expect(prd).to.haveOwnProperty(\"product_id\");\r",
+									"        pm.expect(prd).to.haveOwnProperty(\"name\");\r",
+									"        pm.expect(prd).to.haveOwnProperty(\"quantity\");\r",
+									"        pm.expect(prd).to.haveOwnProperty(\"price\");\r",
+									"        pm.expect(prd).to.haveOwnProperty(\"total_price\");\r",
+									"\r",
+									"        pm.expect(prd.cart_product_id).to.be.an(\"number\")\r",
+									"        pm.expect(prd.product_id).to.be.an(\"number\")\r",
+									"        pm.expect(prd.name).to.be.an(\"string\")\r",
+									"        pm.expect(prd.quantity).to.be.an(\"number\")\r",
+									"        pm.expect(prd.price).to.be.an(\"number\")\r",
+									"        pm.expect(prd.total_price).to.be.an(\"number\")\r",
+									"    })     \r",
+									"})\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2,\r\n    \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/cart",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Cart Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/cart/:id",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"cart",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{cart_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 201 status code', () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"\r",
+									"    // check data\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty('data');\r",
+									"    pm.expect(responseJSON.data).to.be.an(\"object\");\r",
+									"});\r",
+									"\r",
+									"pm.test('should response.data with correct property and values', () => {\r",
+									"    const responseJSON = pm.response.json();\r",
+									"    const data = responseJSON.data;\r",
+									"        \r",
+									"    pm.expect(data).to.haveOwnProperty(\"order_id\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"created_date\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"expired_date\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"total_price\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"status\");\r",
+									"    pm.expect(data).to.haveOwnProperty(\"products\");\r",
+									"})\r",
+									"\r",
+									"pm.environment.set(\"order_id\", responseJSON.data.order_id);\r",
+									"pm.environment.set(\"order_total_price\", responseJSON.data.total_price);\r",
+									"pm.environment.set(\"checkout_ids\", JSON.stringify([]));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var checkOutId = [];\r",
+									"var protocol = pm.environment.get(\"protocol\");\r",
+									"var host = pm.environment.get(\"host\")\r",
+									"var port = pm.environment.get(\"port\")\r",
+									"var token = pm.environment.get(\"access_token\")\r",
+									"\r",
+									"for (let i = 0; i < 5; i++) {\r",
+									"   var req = {\r",
+									"        url: `${protocol}://${host}:${port}/cart`,\r",
+									"        method: \"POST\",\r",
+									"        header: {\r",
+									"            \"Content-Type\": \"application/json\",\r",
+									"            \"Authorization\": `Bearer ${token}`\r",
+									"        },\r",
+									"        body: {\r",
+									"            mode: \"raw\",\r",
+									"            raw: JSON.stringify({\r",
+									"                \"product_id\": Math.ceil(Math.random() * 100),\r",
+									"                \"quantity\": 2\r",
+									"            })\r",
+									"        }\r",
+									"    }\r",
+									"    pm.sendRequest(req, (error, response) => {\r",
+									"        checkOutId = JSON.parse(pm.environment.get(\"checkout_ids\"));\r",
+									"        var res = response.json();\r",
+									"        checkOutId.push(res.data.id);\r",
+									"        pm.environment.set(\"checkout_ids\", JSON.stringify(checkOutId));\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cart_product_ids\": {{checkout_ids}},\r\n    \"payment_type\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/cart/checkout",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"cart",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "payment",
+			"item": [
+				{
+					"name": "Confirm Manual Transfer",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseJSON = pm.response.json();\r",
+									"\r",
+									"pm.test('should response 200 status code', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('should response with correct property and message', () =>{\r",
+									"\r",
+									"    pm.expect(responseJSON).to.be.an('object');\r",
+									"    // check message\r",
+									"    pm.expect(responseJSON).to.haveOwnProperty(\"message\");\r",
+									"    pm.expect(responseJSON.message).to.equal(\"success\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var moment = require('moment')\r",
+									"\r",
+									"pm.environment.set(\"payment_date\", moment().format(\"YYYY-MM-DD\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": {{order_id}},\r\n    \"payment_type\": 1,\r\n    \"bank_account_number\": \"221123455687\",\r\n    \"bank_account_name\": \"Synapsys\",\r\n    \"date\": \"{{payment_date}}\",\r\n    \"value\": {{order_total_price}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{protocol}}://{{host}}:{{port}}/payment/manual-transfer/confirm",
+							"protocol": "{{protocol}}",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"payment",
+								"manual-transfer",
+								"confirm"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
