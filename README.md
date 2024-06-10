@@ -38,6 +38,16 @@ docker run --network local -p 8000:8000 --env HTTP_PORT=8000 \
   --rm --name synapsis synapsis
 
 ```
+## List Of Endpoint
+-  ``[GET] /product`` 
+-  ``[POST] /auth/register``
+-  ``[POST] /auth/login``
+-  ``[GET] /cart``
+-  ``[POST] /cart``
+-  ``[PUT] /cart/:id``
+-  ``[DEL] /cart/:id``
+-  ``[POST] /cart/checkout``
+-  ``[POST] /payment/manual-transfer/confirm``
 
 ## Project Structure
 ![](https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg)
